@@ -1,29 +1,3 @@
-// Copyright (c) 2008 Benedikt Böhm <hollow@gentoo.org>
-// All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions
-// are met:
-//
-// 1. Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
-// 2. Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the
-//    documentation and/or other materials provided with the distribution.
-// 3. The name of the author may not be used to endorse or promote products
-//    derived from this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 #include "apr.h"
 #include "apr_strings.h"
 
@@ -170,19 +144,19 @@ void spot_cookies(request_rec *r)
 	const char *c = get_cookie(r, "__vtc");
 
 	ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-			"a=%s; b=%s; c=%s", a, b, c);
+			"got visitor cookies: a=%s; b=%s; c=%s", a, b, c);
 
 	if (a == NULL) {
-		a = make_cookie(r, "__vta", 2*365*24*60*60);
-		b = make_cookie(r, "__vtb", 30*60);
+		a = make_cookie(r, "__vta", dcfg->vexpiry);
+		b = make_cookie(r, "__vtb", dcfg->sexpiry);
 		c = make_cookie(r, "__vtc", 0);
 	} else if (b == NULL || c == NULL) {
-		b = make_cookie(r, "__vtb", 30*60);
+		b = make_cookie(r, "__vtb", dcfg->sexpiry);
 		c = make_cookie(r, "__vtc", 0);
 	}
 
 	ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-			"a=%s; b=%s; c=%s", a, b, c);
+			"new visitor cookies: a=%s; b=%s; c=%s", a, b, c);
 
 	if (a && b)
 		apr_table_setn(r->notes, "visitor-cookie",
@@ -200,9 +174,6 @@ int visitor_cookie_handler(request_rec *r)
 	r->allowed |= (AP_METHOD_BIT << M_GET);
 	if (r->method_number != M_GET)
 		return DECLINED;
-
-	ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-			"searching for cookies ...");
 
 	/* check and set cookies */
 	spot_cookies(r);
