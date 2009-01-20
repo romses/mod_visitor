@@ -14,13 +14,15 @@ visitors with cookies using an invisible gif image.
 Description
 ===========
 
-mod_visitor creates three tracking cookies, to identify unique visitors and unique visits:
+mod_visitor creates three tracking cookies, to identify unique visitors and
+unique visits:
 
 ``__vtc``
   The `c` cookie has only session lifetime to identify each unique visit.
 
 ``__vtb``
-  The `b` cookie has a short lifetime to still identify a session if the user has closed his browser, but reopens it before the session time expires.
+  The `b` cookie has a short lifetime to still identify a session if the user
+  has closed his browser, but reopens it before the session time expires.
 
 ``__vta``
   The `a` cookie has a long lifetime to identify each unique user.
@@ -41,7 +43,8 @@ webserver:
 Configuration
 =============
 
-In your apache configuration add one or more ``Location`` directives to serve the tracking image:
+In your apache configuration add one or more ``Location`` directives to serve
+the tracking image:
 ::
 
   <Location "/__vt.gif">
@@ -55,6 +58,9 @@ In your apache configuration add one or more ``Location`` directives to serve th
       # session cookies expire after 30 minutes
       SessionExpiry 1800
   </Location>
+
+You can then use the ``%{visitor-cookie}n`` format string in ``mod_log_config``
+to log the visitor cookie to a logfile.
 
 Directives
 ==========
