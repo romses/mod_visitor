@@ -4,9 +4,9 @@ mod_visitor
 
 :Author: `Benedikt Böhm <bb@xnull.de>`_
 :Version: 0.1
-:Web: http://bb.xnull.de/projects/mod_visitor/
-:Source: http://git.xnull.de/cgit/mod_visitor/ (also on `github <http://github.com/hollow/mod_visitor>`_)
-:Download: http://bb.xnull.de/projects/mod_visitor/dist/
+:Web: http://github.com/hollow/mod_visitor
+:Git: ``git clone https://github.com/hollow/mod_visitor.git``
+:Download: http://github.com/hollow/mod_visitor/downloads
 
 mod_visitor is an apache module that provides a simple way to track site
 visitors with cookies using an invisible gif image.
